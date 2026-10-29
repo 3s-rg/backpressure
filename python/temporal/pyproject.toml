@@ -1,0 +1,59 @@
+[project]
+name = "backpressure-temporal"
+version = "0.1.0"
+description = "Temporal plugin for Backpressure: gated activities with queued Valkey admission"
+readme = "README.md"
+requires-python = ">=3.14"
+authors = [
+    { name = "Stanislav Kosorin", email = "stanokosorin4@gmail.com" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.14",
+    "Framework :: AsyncIO",
+    "Topic :: System :: Distributed Computing",
+]
+dependencies = [
+    "backpressure>=0.1.0",
+    "temporalio==1.25.0",
+    "valkey==6.1.1",
+]
+
+[project.urls]
+Repository = "https://github.com/stano45/backpressure"
+Documentation = "https://github.com/stano45/backpressure/tree/main/docs"
+
+[project.optional-dependencies]
+yaml = ["pyyaml==6.0.3"]
+
+[tool.uv.sources]
+backpressure = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/backpressure_temporal"]
+
+[dependency-groups]
+dev = [
+    "basedpyright==1.39.0",
+    "fakeredis[lua,valkey]==2.35.1",
+    "pyyaml==6.0.3",
+    "pytest==9.0.3",
+    "pytest-asyncio==1.3.0",
+    "pytest-timeout==2.4.0",
+    "ruff==0.15.10",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = ["integration: requires a running Valkey instance"]
+filterwarnings = [
+    "ignore:Call to 'get_connection' function with deprecated usage:DeprecationWarning",
+]

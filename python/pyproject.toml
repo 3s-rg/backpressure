@@ -1,0 +1,32 @@
+[tool.uv.workspace]
+members = ["core", "temporal"]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["COM812", "D203", "D213", "LOG"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S101", "PLR2004", "D103"]
+# Runnable demo scripts: prints are the output, module docstrings carry the docs.
+"examples/**" = ["INP001", "T201", "D101", "D102", "D103", "D107"]
+"core/src/backpressure/queued_gate.py" = ["BLE001", "C901", "D107", "PLR0913", "PLR2004", "TC001", "TC003"]
+"core/src/backpressure/multi_gate.py" = ["C901", "D107", "PLR0913", "PLR2004", "TC001", "TC003"]
+# Temporal activities: callbacks with bool params, many-arg private helpers, fire-and-forget error handling.
+"temporal/src/backpressure_temporal/_local_activities.py" = ["BLE001", "C901", "FBT001", "PLR0913"]
+
+[tool.ruff.lint.flake8-builtins]
+builtins-ignorelist = ["input", "next"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["backpressure", "backpressure_temporal"]
+
+[tool.basedpyright]
+pythonVersion = "3.14"
+typeCheckingMode = "strict"
+extraPaths = ["core/src", "temporal/src"]
+# Default include is **/*.py, which would otherwise type-check the workspace .venv.
+exclude = [".venv", "core/tests", "temporal/tests"]

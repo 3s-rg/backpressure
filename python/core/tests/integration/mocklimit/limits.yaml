@@ -1,0 +1,35 @@
+policies:
+  chat:
+    strategy: fixed_window
+    limits:
+      - max_requests: 10
+        window_seconds: 1
+      - max_requests: 500
+        window_seconds: 1
+    scope: api_key
+    response_latency_ms: [0, 0]
+    headers:
+      limit: x-ratelimit-limit-requests
+      remaining: x-ratelimit-remaining-requests
+      reset: x-ratelimit-reset-requests
+  models:
+    strategy: fixed_window
+    limits:
+      - max_requests: 100
+        window_seconds: 1
+    scope: api_key
+    response_latency_ms: [0, 0]
+    headers:
+      limit: x-ratelimit-limit-requests
+      remaining: x-ratelimit-remaining-requests
+      reset: x-ratelimit-reset-requests
+endpoints:
+  /chat/completions:
+    methods: [POST]
+    policy: chat
+    token_estimation:
+      input: characters_div_4
+      output: [20, 100]
+  /models:
+    methods: [GET]
+    policy: models

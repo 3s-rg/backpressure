@@ -1,0 +1,26 @@
+services:
+  valkey:
+    image: valkey/valkey:8-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  mocklimit:
+    image: skosorin/mocklimit:latest
+    pull_policy: always
+    command: ["serve", "--spec", "/etc/mocklimit/openapi.yaml", "--rate-config", "/etc/mocklimit/limits.yaml", "--host", "0.0.0.0"]
+    environment:
+      MOCKLIMIT_LOG_LEVEL: DEBUG
+    volumes:
+      - ./python/core/tests/integration/mocklimit:/etc/mocklimit:ro
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/v1/models')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
